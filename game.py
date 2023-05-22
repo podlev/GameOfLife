@@ -61,7 +61,7 @@ class Field:
         self.field = self.get_next_field()
 
 
-class Game:
+class ConsoleGame:
     def __init__(self, width, height, randomize=False):
         self.game_field = Field(width=width, height=height, randomize=randomize)
 
@@ -89,12 +89,12 @@ class Game:
                 self.draw()
                 self.game_field.step()
                 input() if step_by_step else time.sleep(DELAY)
-                Game.clear()
+                self.clear()
             except KeyboardInterrupt:
                 break
 
 
 if __name__ == '__main__':
-    game = Game(width=WIDTH, height=HEIGHT, randomize=False)
+    game = ConsoleGame(width=WIDTH, height=HEIGHT, randomize=False)
     game.set_figures([('planner', 5, 1), ('r-pentamino',), ('planner', 100, 100)])
     game.run(step_by_step=False)

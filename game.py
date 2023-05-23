@@ -7,8 +7,8 @@ import time
 from pygame.colordict import THECOLORS
 
 DELAY = 0.1
-WIDTH = 80
-HEIGHT = 60
+WIDTH = 80 * 2
+HEIGHT = 60 * 2
 SCREEN_WIDTH = 800
 SCREEN_HEIGHT = 600
 FPS = 30
@@ -151,14 +151,13 @@ class GraphGame:
         for row in range(self.game_field.height):
             for col in range(self.game_field.width):
                 cell = self.game_field.field[row][col]
-                color = WHITE
                 if cell.is_alive:
                     color = BLACK
-                pygame.draw.rect(self.screen, color, (
-                    col * self.cell_width,
-                    row * self.cell_height,
-                    (col + 1) * self.cell_width,
-                    (row + 1) * self.cell_height))
+                    pygame.draw.rect(self.screen, color, (
+                        col * self.cell_width,
+                        row * self.cell_height,
+                        self.cell_width,
+                        self.cell_height))
 
 
 
@@ -169,5 +168,5 @@ class GraphGame:
 
 if __name__ == '__main__':
     game = GraphGame(width=WIDTH, height=HEIGHT, randomize=True)
-    #  game.set_figures([('planner', 5, 1), ('r-pentamino',), ('planner', 5, 30)])
+    # game.set_figures([('r-pentamino',)])
     game.run()

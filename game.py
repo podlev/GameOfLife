@@ -1,10 +1,22 @@
+import pygame
+
 import os
 import random
 import time
 
+from pygame.colordict import THECOLORS
+
 DELAY = 0.1
-WIDTH = 40
-HEIGHT = 10
+WIDTH = 80
+HEIGHT = 60
+SCREEN_WIDTH = 800
+SCREEN_HEIGHT = 600
+FPS = 30
+
+WHITE = THECOLORS['white']
+GRAY = THECOLORS['gray']
+BLACK = THECOLORS['black']
+
 
 FIGURES = {'planner': lambda y, x: [(y - 1, x + 1), (y, x - 1), (y, x + 1), (y + 1, x), (y + 1, x + 1)],
            'r-pentamino': lambda y, x: [(y - 1, x), (y, x), (y, x + 1), (y + 1, x - 1), (y + 1, x)]}
@@ -61,7 +73,7 @@ class Field:
         self.field = self.get_next_field()
 
 
-class Game:
+class ConsoleGame:
     def __init__(self, width, height, randomize=False):
         self.game_field = Field(width=width, height=height, randomize=randomize)
 
@@ -89,12 +101,73 @@ class Game:
                 self.draw()
                 self.game_field.step()
                 input() if step_by_step else time.sleep(DELAY)
-                Game.clear()
+                self.clear()
             except KeyboardInterrupt:
                 break
 
 
+class GraphGame:
+    def __init__(self, width, height, randomize=False):
+        pygame.init()
+        self.clock = pygame.time.Clock()
+        self.screen = pygame.display.set_mode([SCREEN_WIDTH, SCREEN_HEIGHT])
+        self.game_field = Field(width=width, height=height, randomize=randomize)
+        self.cell_width = SCREEN_WIDTH // width
+        self.cell_height = SCREEN_HEIGHT // height
+
+    def set_figures(self, figures):
+        for figure in figures:
+            self.game_field.set_figure(*figure)
+
+    def run(self):
+        running = True
+        while running:
+            for event in pygame.event.get():
+                if event.type == pygame.QUIT:
+                    running = False
+            self.screen.fill(WHITE)
+            self.draw()
+            self.draw_lines()
+            self.game_field.step()
+            pygame.display.flip()
+            self.clock.tick(FPS)
+        pygame.quit()
+
+    def draw_lines(self):
+        for row in range(1, self.game_field.height):
+            pygame.draw.line(
+                self.screen,
+                GRAY,
+                (0, row * self.cell_height),
+                (SCREEN_WIDTH, row * self.cell_height)
+            )
+        for col in range(1, self.game_field.width):
+            pygame.draw.line(
+                self.screen, GRAY,
+                (col * self.cell_width, 0),
+                (col * self.cell_width, SCREEN_HEIGHT))
+
+    def draw(self):
+        for row in range(self.game_field.height):
+            for col in range(self.game_field.width):
+                cell = self.game_field.field[row][col]
+                color = WHITE
+                if cell.is_alive:
+                    color = BLACK
+                pygame.draw.rect(self.screen, color, (
+                    col * self.cell_width,
+                    row * self.cell_height,
+                    (col + 1) * self.cell_width,
+                    (row + 1) * self.cell_height))
+
+
+
+# if __name__ == '__main__':
+#     game = ConsoleGame(width=WIDTH, height=HEIGHT, randomize=False)
+#     game.set_figures([('planner', 5, 1), ('r-pentamino',), ('planner', 5, 30)])
+#     game.run(step_by_step=False)
+
 if __name__ == '__main__':
-    game = Game(width=WIDTH, height=HEIGHT, randomize=False)
-    game.set_figures([('planner', 5, 1), ('r-pentamino',), ('planner', 100, 100)])
-    game.run(step_by_step=False)
+    game = GraphGame(width=WIDTH, height=HEIGHT, randomize=True)
+    #  game.set_figures([('planner', 5, 1), ('r-pentamino',), ('planner', 5, 30)])
+    game.run()

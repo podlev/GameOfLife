@@ -7,11 +7,11 @@ import time
 from pygame.colordict import THECOLORS
 
 DELAY = 0.1
-WIDTH = 80 * 2
-HEIGHT = 60 * 2
-SCREEN_WIDTH = 800
-SCREEN_HEIGHT = 600
-FPS = 30
+WIDTH = 50
+HEIGHT = 50
+SCREEN_WIDTH = 400
+SCREEN_HEIGHT = 400
+FPS = 1
 
 WHITE = THECOLORS['white']
 GRAY = THECOLORS['gray']
@@ -109,6 +109,7 @@ class ConsoleGame:
 class GraphGame:
     def __init__(self, width, height, randomize=False):
         pygame.init()
+        pygame.display.set_caption('Game of Life')
         self.clock = pygame.time.Clock()
         self.screen = pygame.display.set_mode([SCREEN_WIDTH, SCREEN_HEIGHT])
         self.game_field = Field(width=width, height=height, randomize=randomize)
@@ -162,11 +163,11 @@ class GraphGame:
 
 
 # if __name__ == '__main__':
-#     game = ConsoleGame(width=WIDTH, height=HEIGHT, randomize=False)
-#     game.set_figures([('planner', 5, 1), ('r-pentamino',), ('planner', 5, 30)])
-#     game.run(step_by_step=False)
+#     game = ConsoleGame(width=WIDTH, height=HEIGHT, randomize=True)
+#     game.set_figures([('r-pentamino',)])
+#     game.run()
 
 if __name__ == '__main__':
     game = GraphGame(width=WIDTH, height=HEIGHT, randomize=True)
-    # game.set_figures([('r-pentamino',)])
+    game.set_figures([('r-pentamino',)])
     game.run()

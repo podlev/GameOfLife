@@ -40,3 +40,4 @@ game.set_figure('planner', row=5, col=20)
 
 ### Пример
 ![Пример](example/example.gif)
+тест
